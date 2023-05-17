@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/github.io/nosql_protocol/static/css/main.31e9242f.css",
+    "main.js": "/github.io/nosql_protocol/static/js/main.ab020c31.js",
+    "static/js/787.feeafb92.chunk.js": "/github.io/nosql_protocol/static/js/787.feeafb92.chunk.js",
+    "static/media/diag.png": "/github.io/nosql_protocol/static/media/diag.f7b3a86949dce71bba24.png",
+    "index.html": "/github.io/nosql_protocol/index.html",
+    "main.31e9242f.css.map": "/github.io/nosql_protocol/static/css/main.31e9242f.css.map",
+    "main.ab020c31.js.map": "/github.io/nosql_protocol/static/js/main.ab020c31.js.map",
+    "787.feeafb92.chunk.js.map": "/github.io/nosql_protocol/static/js/787.feeafb92.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31e9242f.css",
+    "static/js/main.ab020c31.js"
+  ]
+}

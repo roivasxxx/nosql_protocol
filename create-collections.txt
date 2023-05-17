@@ -1,0 +1,264 @@
+load("./data/scripts/auth.js");
+
+console.debug("CREATING FACULTIES");
+db.createCollection("faculties", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "shortcut"],
+      properties: {
+        name: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Faculty name"
+        },
+        shortcut: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Faculty name shorcut"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING COURSES");
+db.createCollection("courses", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["faculty_id", "name", "shortcut"],
+      properties: {
+        faculty_id: {
+          bsonType: "objectId",
+          description: "ObjectId of an object from faculties collection"
+        },
+        name: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Name of course - ex. Základy matematiky 1"
+        },
+        shortcut: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Shortcut of course - ex. ZMAT1"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING THREADS");
+db.createCollection("threads", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["course_id", "title", "author"],
+      properties: {
+        course_id: {
+          bsonType: "objectId",
+          description: "ObjectId of an object from courses collection"
+        },
+        author: {
+          bsonType: "objectId",
+          description: "ObjectId of thread author"
+        },
+        title: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Thread title"
+        },
+        notifications: {
+          bsonType: "array",
+          items: {
+            bsonType: "objectId",
+            description: "User objectId"
+          },
+          uniqueItems: true,
+          description: "Array of user ids - notifications"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING POSTS");
+db.createCollection("posts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["author_id", "thread_id", "created_at", "text"],
+      properties: {
+        author_id: {
+          bsonType: "objectId",
+          description: "ObjectId of post author - taken from users collection"
+        },
+        thread_id: {
+          bsonType: "objectId",
+          description: "ObjectId of thread"
+        },
+        text: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Post text data - the actual content of the post"
+        },
+        created_at: {
+          bsonType: "date",
+          description: "Date of post creation"
+        },
+        updated_at: {
+          bsonType: "date",
+          description: "Date of last update"
+        },
+        replying_to: {
+          bsonType: "array",
+          items: {
+            bsonType: "objectId",
+            description: "Post objectId"
+          },
+          uniqueItems: true,
+          description: "Array of post ids - responses to previous posts"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING USERS");
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["email", "salt", "password", "nickname", "created_at"],
+      properties: {
+        email: {
+          bsonType: "string",
+          minLength: 10,
+          maxLength: 96,
+          pattern: "^.+@.+$",
+          description: "User email"
+        },
+        nickname: {
+          bsonType: "string",
+          minLength: 1,
+          description: "Nick of user"
+        },
+        salt: {
+          bsonType: "string",
+          minLength: 1,
+          description: "Salt for password"
+        },
+        password: {
+          bsonType: "string",
+          minLength: 8,
+          description: "User password - hashed"
+        },
+        created_at: {
+          bsonType: "date",
+          description: "Date of user creation"
+        },
+        last_login: {
+          bsonType: "date",
+          description: "Date of last login"
+        },
+        available_login_attemps: {
+          bsonType: "number",
+          minimum: 0,
+          maximum: 10,
+          description: "Available login attemps"
+        },
+        allow_message_notifications: {
+          bsonType: "bool",
+          description:
+            "Flag that says whether user wants to be notified about new messages"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING CONVERSATIONS");
+db.createCollection("conversations", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["user1", "user2"],
+      properties: {
+        user1: {
+          bsonType: ["null", "objectId"],
+          description: "Id of first user"
+        },
+        user2: {
+          bsonType: ["null", "objectId"],
+          description: "Id of second user"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING CONVERSATION MESSAGES");
+db.createCollection("conversation_messages", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["conversation_id", "author", "message"],
+      properties: {
+        conversation_id: {
+          bsonType: "objectId",
+          description: "Id of conversation"
+        },
+        author: {
+          bsonType: "objectId",
+          description: "Id of author"
+        },
+        message: {
+          bsonType: "string",
+          minLength: 0,
+          description: "Raw text"
+        },
+        sent_at: {
+          bsonType: "date",
+          description: "Date of creation"
+        }
+      }
+    }
+  }
+});
+
+console.debug("CREATING NOTIFICATIONS");
+db.createCollection("notifications", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["user", "title", "message", "created_at", "read"],
+      properties: {
+        title: {
+          bsonType: "string",
+          minLength: 1,
+          description: "Title of notification"
+        },
+        message: {
+          bsonType: "string",
+          minLength: 1,
+          description: "Notification message - content of notification"
+        },
+        created_at: {
+          bsonType: "date",
+          description: "Date of notification creation"
+        },
+        user: {
+          bsonType: "objectId",
+          description: "Id of user whom should be notified"
+        },
+        read: {
+          bsonType: "bool",
+          description:
+            "Boolean value that indicates whether notification has been read or not"
+        }
+      }
+    }
+  }
+});
+
+console.debug("create-collections.js FINISHED");
